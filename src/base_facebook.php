@@ -125,7 +125,7 @@ abstract class BaseFacebook
   /**
    * Version.
    */
-  const VERSION = '3.2.3';
+  const VERSION = '3.2.3-cc';
 
   /**
    * Signed Request Algorithm.
@@ -1183,6 +1183,11 @@ abstract class BaseFacebook
    */
   protected function getUrl($name, $path='', $params=array()) {
     $url = self::$DOMAIN_MAP[$name];
+
+    if ($name == 'graph') {
+      $url .= "v2.3/";
+    }
+
     if ($path) {
       if ($path[0] === '/') {
         $path = substr($path, 1);
