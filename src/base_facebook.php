@@ -1185,7 +1185,7 @@ abstract class BaseFacebook
     $url = self::$DOMAIN_MAP[$name];
 
     if ($name == 'graph') {
-      $url .= "v2.3/";
+      $url .= "v2.1/";
     }
 
     if ($path) {
