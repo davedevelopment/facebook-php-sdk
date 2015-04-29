@@ -781,6 +781,8 @@ abstract class BaseFacebook
       return false;
     }
 
+    \Logger::info("CODE $code");
+
     if ($redirect_uri === null) {
       $redirect_uri = $this->getCurrentUrl();
     }
@@ -788,6 +790,7 @@ abstract class BaseFacebook
     try {
       // need to circumvent json_decode by calling _oauthRequest
       // directly, since response isn't JSON format.
+      \Logger::info("Hitting: ".$this->getUrl('graph', '/oauth/access_token'));
       $access_token_response =
         $this->_oauthRequest(
           $this->getUrl('graph', '/oauth/access_token'),
@@ -795,7 +798,9 @@ abstract class BaseFacebook
                           'client_secret' => $this->getAppSecret(),
                           'redirect_uri' => $redirect_uri,
                           'code' => $code));
+    \Logger::info("access_token_response $access_token_response");
     } catch (FacebookApiException $e) {
+    \Logger::info("caught " . $e->getMessage());
       // most likely that user very recently revoked authorization.
       // In any event, we don't have an access token, so say so.
       return false;
@@ -807,7 +812,11 @@ abstract class BaseFacebook
 
     $response_params = json_decode($access_token_response, true);
     if (!isset($response_params['access_token'])) {
-      return false;
+      $response_params = array();
+      parse_str($access_token_response, $response_params);
+      if (!isset($response_params['access_token'])) {
+        return false;
+      }
     }
 
     return $response_params['access_token'];
